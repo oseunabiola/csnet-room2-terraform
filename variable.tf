@@ -99,3 +99,25 @@ variable "main_eip_name" {
   type        = string
   default     = "room2-EIP"
 }
+
+variable "sg_priv_name" {
+  description = "The name of the private security group"
+  type        = string
+  default     = "room2-SG-priv"
+}
+variable "sg_pub_name" {
+  description = "The name of the public security group"
+  type        = string
+  default     = "room2-SG-pub"
+}
+
+variable "tomcat_server_ami_id" {
+  description = "The AMI ID of our tomcat server"
+  type        = string
+  default     = "ami-04b4f1a9cf54c11d0" // Ubuntu AMI ID
+}
+variable "tomcat_server_ec2_instance_type" {
+  description = "The instance type of our tomcat server"
+  type        = string
+  default     = "t2.medium" // Ubuntu AMI ID
+}

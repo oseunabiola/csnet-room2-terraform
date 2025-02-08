@@ -124,3 +124,52 @@ resource "aws_route_table_association" "priv_subnet2_association" {
   subnet_id      = aws_subnet.priv_subnet2.id
   route_table_id = aws_route_table.priv_route_table.id
 }
+
+# 2 Security Group
+resource "aws_security_group" "priv_sg" {
+  name        = var.sg_priv_name
+  description = "Allow TLS inbound traffic and all outbound traffic"
+  vpc_id      = aws_vpc.main_vpc.id
+
+  tags = {
+    Name = var.sg_priv_name
+  }
+}
+
+resource "aws_security_group" "pub_sg" {
+  name        = var.sg_pub_name
+  description = "Allow TLS inbound traffic and all outbound traffic"
+  vpc_id      = aws_vpc.main_vpc.id
+
+  tags = {
+    Name = var.sg_pub_name
+  }
+}
+
+# Security group rule
+resource "aws_vpc_security_group_ingress_rule" "tomcat_port" {
+  security_group_id = aws_security_group.priv_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 8080
+  to_port     = 8080
+  ip_protocol = "tcp"
+}
+resource "aws_vpc_security_group_ingress_rule" "ssh_port" {
+  security_group_id = aws_security_group.priv_sg.id
+
+  cidr_ipv4   = var.priv_subnet1_cidr_block
+  from_port   = 22
+  to_port     = 22
+  ip_protocol = "tcp"
+}
+resource "aws_vpc_security_group_egress_rule" "all" {
+  security_group_id = aws_security_group.priv_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  ip_protocol = "-1"
+}
+
+
+# S3 bucket
+# 
