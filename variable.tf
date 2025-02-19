@@ -114,10 +114,17 @@ variable "sg_pub_name" {
 variable "tomcat_server_ami_id" {
   description = "The AMI ID of our tomcat server"
   type        = string
-  default     = "ami-04b4f1a9cf54c11d0" // Ubuntu AMI ID
+  default     = "ami-0e1bed4f06a3b463d" // Ubuntu AMI ID
 }
 variable "tomcat_server_ec2_instance_type" {
   description = "The instance type of our tomcat server"
   type        = string
-  default     = "t2.medium" // Ubuntu AMI ID
+  default     = "t2.micro"
+}
+
+variable "alb_sg_name" {
+  description = "The ALB SG name"
+  type        = string
+  default     = "room2-alb-sg"
+
 }

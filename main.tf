@@ -62,16 +62,16 @@ resource "aws_route_table" "pub_route_table" {
 resource "aws_route_table" "priv_route_table" {
   vpc_id = aws_vpc.main_vpc.id
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.main_nat_gw.id
-  }
+  # route {
+  #   cidr_block     = "0.0.0.0/0"
+  #   nat_gateway_id = aws_nat_gateway.main_nat_gw.id
+  # }
 
   tags = {
     Name = var.priv_route_table_name
   }
 
-  depends_on = [aws_nat_gateway.main_nat_gw]
+  # depends_on = [aws_nat_gateway.main_nat_gw]
 }
 
 # 1 internet gateway
@@ -84,25 +84,25 @@ resource "aws_internet_gateway" "main_igw" {
 }
 
 # 1 NAT gateway
-resource "aws_nat_gateway" "main_nat_gw" {
-  allocation_id = aws_eip.main_eip.id #TODO: Create an Elastic IP
-  subnet_id     = aws_subnet.pub_subnet2.id
+# resource "aws_nat_gateway" "main_nat_gw" {
+#   allocation_id = aws_eip.main_eip.id #TODO: Create an Elastic IP
+#   subnet_id     = aws_subnet.pub_subnet2.id
 
-  tags = {
-    Name = var.main_nat_gw_name
-  }
+#   tags = {
+#     Name = var.main_nat_gw_name
+#   }
 
-  depends_on = [aws_eip.main_eip]
-}
+#   depends_on = [aws_eip.main_eip]
+# }
 
-# 1 Elastic IP
-resource "aws_eip" "main_eip" {
-  domain = "vpc"
+# # 1 Elastic IP
+# resource "aws_eip" "main_eip" {
+#   domain = "vpc"
 
-  tags = {
-    Name = var.main_eip_name
-  }
-}
+#   tags = {
+#     Name = var.main_eip_name
+#   }
+# }
 
 # 1 route table association
 resource "aws_route_table_association" "pub_subnet1_association" {
@@ -147,16 +147,25 @@ resource "aws_security_group" "pub_sg" {
 }
 
 # Security group rule
-resource "aws_vpc_security_group_ingress_rule" "tomcat_port" {
-  security_group_id = aws_security_group.priv_sg.id
+resource "aws_vpc_security_group_ingress_rule" "tomcat_http_port" {
+  security_group_id = aws_security_group.pub_sg.id
 
   cidr_ipv4   = "0.0.0.0/0"
-  from_port   = 8080
-  to_port     = 8080
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "tomcat_https_port" {
+  security_group_id = aws_security_group.pub_sg.id
+
+  cidr_ipv4   = "0.0.0.0/0"
+  from_port   = 443
+  to_port     = 443
   ip_protocol = "tcp"
 }
 resource "aws_vpc_security_group_ingress_rule" "ssh_port" {
-  security_group_id = aws_security_group.priv_sg.id
+  security_group_id = aws_security_group.pub_sg.id
 
   cidr_ipv4   = var.priv_subnet1_cidr_block
   from_port   = 22
@@ -164,7 +173,7 @@ resource "aws_vpc_security_group_ingress_rule" "ssh_port" {
   ip_protocol = "tcp"
 }
 resource "aws_vpc_security_group_egress_rule" "all" {
-  security_group_id = aws_security_group.priv_sg.id
+  security_group_id = aws_security_group.pub_sg.id
 
   cidr_ipv4   = "0.0.0.0/0"
   ip_protocol = "-1"

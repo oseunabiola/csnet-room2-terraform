@@ -14,10 +14,10 @@ sudo useradd -d /usr/share/tomcat -r -s /bin/false -g tomcat tomcat
 
 # Download and extract Tomcat
 cd /opt
-sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.98/bin/apache-tomcat-9.0.98.tar.gz
-sudo tar -xvf apache-tomcat-9.0.98.tar.gz
-sudo mv apache-tomcat-9.0.98 tomcat9
-sudo rm -rf apache-tomcat-9.0.98.tar.gz
+sudo wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.99/bin/apache-tomcat-9.0.99.tar.gz
+sudo tar -xvf apache-tomcat-9.0.99.tar.gz
+sudo mv apache-tomcat-9.0.99 tomcat9
+sudo rm -rf apache-tomcat-9.0.99.tar.gz
 
 # Set permissions
 sudo chown -R tomcat:tomcat /opt/tomcat9
@@ -52,10 +52,3 @@ WantedBy=multi-user.target
 sudo systemctl daemon-reload
 sudo systemctl start tomcat
 sudo systemctl enable tomcat
-
-
-git clone https://github.com/chawler-solutions-NeT/petadoption-springboot.git
-cd petadoption-springboot
-mvn compile package -Dcheckstyle.skip
-sudo cp target/spring-petclinic-2.4.2.war /opt/tomcat9/webapps/
-sudo nohup java -jar /opt/tomcat9/webapps/spring-petclinic-2.4.2.war &
